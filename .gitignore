@@ -1,2 +1,28 @@
-# Ignore Go build output
+# Binaries
 /server
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build & test output
+/bin/
+/pkg/
+*.out
+
+# IDE/editor config
+.vscode/
+.idea/
+*.swp
+
+# Dependency directories
+vendor/
+
+# Logs
+*.log
+*.tmp
+
+# Docker artifacts
+*.env
+.DS_Store
