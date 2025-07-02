@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies & Golang
 RUN apt-get update && apt-get install -y \
+    iputils-ping \
     curl \
     git \
     unzip \

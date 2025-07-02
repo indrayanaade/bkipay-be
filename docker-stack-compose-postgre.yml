@@ -1,0 +1,35 @@
+services:
+  bkipay-db:
+    image: postgres:16
+    container_name: bkipay-db
+    hostname: bkipay-db
+    restart: always
+    ports:
+      - "7002:5432"
+    env_file:
+      - stack.env
+    environment:
+      - TZ=Asia/Jakarta
+      - POSTGRES_USER=bkipay
+      - POSTGRES_PASSWORD=adMin!1234
+      - POSTGRES_DB=bkipaydb
+    volumes:
+      - /mnt/data/docker-volume/bkipay-db:/var/lib/postgresql/data
+    networks:
+      - gcloud-dbs-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "bkipay"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  gcloud-dbs-net:
+    name: gcloud-dbs-net
+    external: true
