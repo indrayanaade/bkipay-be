@@ -1,0 +1,28 @@
+services:
+  bkipay-api:
+    image: bkipay-api:v1
+    container_name: bkipay-api
+    hostname: bkipay-api
+    restart: always
+    stdin_open: true
+    tty: true
+    ports:
+      - "8010:8010"  # http:container
+      - "8011:443"   # https:container
+    volumes:
+      - type: bind
+        source: /mnt/data/source-code/development/bkipay-api
+        target: /app
+    networks:
+      - gcloud-apps-net
+    healthcheck:
+      test: curl --fail http://localhost:8080/api/hello || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+# Docker Networks
+networks:
+  gcloud-apps-net:
+    name: gcloud-apps-net
+    external: true
