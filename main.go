@@ -1,12 +1,20 @@
 package main
 
 import (
+	"log"
+	
 	"github.com/gin-gonic/gin"
 	"github.com/indrayanaade/bkipay-api/internal/database"
+	"github.com/indrayanaade/bkipay-api/internal/redis"
 )
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
+
+	//Init Redis client di awal
+	if err := redis.InitRedis(); err != nil {
+		log.Fatalf("Redis init failed: %v", err)
+	}
 
 	r := gin.Default()
 
@@ -29,6 +37,8 @@ func main() {
 		c.JSON(200, gin.H{"message": "Hello from BKIPay API!"})
 	})
 
+
+	// Cek koneksi DB
 	r.GET("/api/ping-db", func(c *gin.Context) {
 		db, err := database.ConnectDB()
 		if err != nil {
@@ -46,6 +56,20 @@ func main() {
 		}
 		c.JSON(200, gin.H{"status": "ok", "message": "DB connected successfully"})
 	})
+
+	// Cek koneksi Redis
+	r.GET("/api/ping-redis", func(c *gin.Context) {
+		ctx := c.Request.Context()
+		if redis.RedisClient == nil {
+			c.JSON(500, gin.H{"status": "error", "message": "Redis client not initialized"})
+			return
+		}
+		if err := redis.RedisClient.Ping(ctx).Err(); err != nil {
+			c.JSON(500, gin.H{"status": "error", "message": "Redis not reachable", "error": err.Error()})
+			return
+		}
+		c.JSON(200, gin.H{"status": "ok", "message": "Redis connected successfully"})
+	})	
 
 	r.Run("0.0.0.0:8010")
 }

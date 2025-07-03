@@ -1,0 +1,30 @@
+services:
+  redis:
+    image: redis:7.4
+    container_name: bkipay-redis
+    hostname: bkipay-redis
+    restart: always
+    ports:
+      - "7003:6379"  # only expose if you need external access
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    env_file:
+      - stack.env
+    volumes:
+      - /mnt/data/docker-volume/bkipay-redis:/data
+    networks:
+      - gcloud-dbs-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+# Docker Networks
+networks:
+  gcloud-dbs-net:
+    external: true

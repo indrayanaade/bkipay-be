@@ -9,6 +9,8 @@ services:
     ports:
       - "8010:8010"  # http:container
       - "8011:443"   # https:container
+    env_file:
+      - stack.env
     # volumes:
       # - type: bind
         # source: /mnt/data/source-code/development/bkipay-api
