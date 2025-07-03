@@ -9,10 +9,10 @@ services:
     ports:
       - "8010:8010"  # http:container
       - "8011:443"   # https:container
-    volumes:
-      - type: bind
-        source: /mnt/data/source-code/development/bkipay-api
-        target: /app
+    # volumes:
+      # - type: bind
+        # source: /mnt/data/source-code/development/bkipay-api
+        # target: /app
     networks:
       - gcloud-apps-net      # untuk akses frontend / service lain
       - gcloud-dbs-net       # untuk akses database

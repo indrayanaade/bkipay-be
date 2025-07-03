@@ -22,16 +22,25 @@ RUN apt-get update && apt-get install -y \
 
 ENV PATH="/usr/local/go/bin:$PATH"
 
+# Buat direktori kerja
 WORKDIR /app
 
-# Salin semua source ke container
+COPY .env .env
+# Salin file dependency lebih awal untuk cache build
+COPY go.mod ./
+COPY go.sum ./
+RUN go mod download && go mod verify
+
+# Salin semua source code setelah download dependency
 COPY . .
 
 # Build aplikasi sekali saja saat build image
-RUN go mod tidy && go build -o server
+# Ubah path build sesuai lokasi main.go
+# Build aplikasi (otomatis lengkapi go.sum juga)
+RUN go mod tidy && go build -v -o server .
 
-# Expose port yang sesuai dengan yang dipakai di aplikasi (8010)
+# Expose port aplikasi
 EXPOSE 8010
 
 # Jalankan server
-CMD ["./server"]
+CMD ["/app/server"]
