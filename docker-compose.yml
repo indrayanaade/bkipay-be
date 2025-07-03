@@ -1,23 +1,23 @@
 services:
-  bkipay-api:
-    image: bkipay-api:v1
-    container_name: bkipay-api
-    hostname: bkipay-api
+  bkipay-be:
+    image: bkipay-be:v1
+    container_name: bkipay-be
+    hostname: bkipay-be
     restart: always
     stdin_open: true
     tty: true
     ports:
-      - "8010:8010"  # http:container
-      - "8011:443"   # https:container
+      - "8010:8010"
+      - "8011:443" 
     env_file:
       - stack.env
     # volumes:
       # - type: bind
-        # source: /mnt/data/source-code/development/bkipay-api
+        # source: /mnt/data/source-code/development/bkipay-be
         # target: /app
     networks:
-      - gcloud-apps-net      # untuk akses frontend / service lain
-      - gcloud-dbs-net       # untuk akses database
+      - gcloud-apps-net
+      - gcloud-dbs-net 
     healthcheck:
       test: curl --fail http://localhost:8010/api/hello || exit 1
       interval: 30s
